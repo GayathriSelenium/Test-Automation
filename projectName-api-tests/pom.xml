@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.origin.qa.api</groupId>
+    <artifactId>projectName-api-tests</artifactId>
+    <version>1.0</version>
+
+    <properties>
+
+        <encoding>UTF-8</encoding>
+        <java.source>1.8</java.source>
+        <java.target>1.8</java.target>
+
+        <!--versions-->
+        <version.origin.framework>1.0</version.origin.framework>
+        <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+        <codehaus.mojo.exec.maven.plugin.version>1.2.1</codehaus.mojo.exec.maven.plugin.version>
+        <maven-shade-plugin.version>3.1.1</maven-shade-plugin.version>
+
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.origin.qa.framework</groupId>
+            <artifactId>ws</artifactId>
+            <version>${version.origin.framework}</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <skip.tests>false</skip.tests>
+                <create.cucumber.report>false</create.cucumber.report>
+                <create.test.results.folder>false</create.test.results.folder>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>local</id>
+            <properties>
+                <skip.tests>false</skip.tests>
+                <create.cucumber.report>true</create.cucumber.report>
+                <create.test.results.folder>false</create.test.results.folder>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>skipTests</id>
+            <properties>
+                <skip.tests>true</skip.tests>
+                <create.cucumber.report>false</create.cucumber.report>
+                <create.test.results.folder>false</create.test.results.folder>
+            </properties>
+        </profile>
+
+    </profiles>
+
+    <build>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>${java.source}</source>
+                    <target>${java.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <manifestEntries>
+                                <Main-Class>com.origin.qa.framework.utils.RunTests</Main-Class>
+                            </manifestEntries>
+                        </transformer>
+                    </transformers>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${codehaus.mojo.exec.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>run-cucumber-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${skip.tests}</skip>
+                    <mainClass>com.origin.qa.framework.utils.RunTests</mainClass>
+                    <classpathScope>test</classpathScope>
+                    <arguments>
+                        <argument>${create.cucumber.report}</argument>
+                        <argument>${create.test.results.folder}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

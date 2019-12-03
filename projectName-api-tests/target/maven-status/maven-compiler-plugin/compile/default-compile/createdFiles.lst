@@ -1,0 +1,14 @@
+com\origin\qa\api\projectName\model\Weather.class
+com\origin\qa\api\projectName\model\Main.class
+com\origin\qa\api\projectName\model\Sys.class
+com\origin\qa\api\projectName\model\Coord.class
+com\origin\qa\api\projectName\steps\BaseStepsDef.class
+com\origin\qa\api\projectName\utils\TestData.class
+com\origin\qa\api\projectName\response\SearchResponse.class
+com\origin\qa\api\projectName\steps\OpenWeatherMapSearchStepsDef.class
+com\origin\qa\api\projectName\model\Clouds.class
+com\origin\qa\api\projectName\model\OpenWeatherMapSearchRS.class
+com\origin\qa\api\projectName\model\Wind.class
+com\origin\qa\api\projectName\utils\ScenarioContext.class
+com\origin\qa\api\projectName\steps\CommonStepsDef.class
+com\origin\qa\api\projectName\request\SearchRequest.class
