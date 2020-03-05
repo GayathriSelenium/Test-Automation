@@ -1,0 +1,250 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: PWRT API
+Parameters:
+  CognitoId:
+    Type: String
+    Description: Id of the cognito user pool used for authentication
+  SharedStack:
+    Type: String
+    Default: API-Shared
+    Description: Name of the cloudformation stack that builds shared API Gateway resources
+  BucketName:
+    Type: String
+    Default: igbuild-datalake-staging-dev
+    Description: S3 destination to write recovery state change events
+Globals:
+  Function:
+    Timeout: 20
+    Runtime: nodejs8.10
+  Api:
+    Cors:
+      AllowMethods: '''*'''
+      AllowHeaders: '''*'''
+      AllowOrigin: '''*'''
+Resources:
+  PWRTApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: PWRT API
+      StageName: v1
+      MethodSettings:
+      - DataTraceEnabled: true
+        HttpMethod: '*'
+        LoggingLevel: INFO
+        ResourcePath: /*
+        MetricsEnabled: true
+      Auth:
+        Authorizers:
+          PermissionsAuth:
+            FunctionPayloadType: REQUEST
+            FunctionArn:
+              Fn::Sub: arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ServerlessAuthLocal-APIGatewayAuthorizer
+            Identity:
+              Headers:
+              - Authorization
+              ReauthorizeEvery: 0
+      DefinitionBody:
+        swagger: '2.0'
+        info:
+          title: PWRT
+          version: 1.0.0
+          contact:
+            name: Jason Drummond
+            email: jason.drummond2@origin.com.au
+        tags:
+        - name: PWRT
+          description: Application Service
+        schemes:
+        - https
+        basePath: /v1
+        paths:
+          /recovery-state-change-event:
+            post:
+              summary: Create a new recovery state change event
+              tags:
+              - recovery-state-change-event
+              parameters:
+              - name: role
+                in: body
+                description: The new application to be created
+                required: true
+                schema:
+                  $ref: '#/definitions/CreateRecoveryStateChangeEvent'
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: The new recovery state change event
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/definitions/recoveryState'
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+                '400':
+                  description: Error Response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+              security:
+              - PermissionsAuth: []
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations
+                  - LambdaArn:
+                      Fn::GetAtt:
+                      - CreateRecoveryStateChangeEvent
+                      - Arn
+                responses:
+                  default:
+                    statusCode: '200'
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''*'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                  (\n|.)+:
+                    statusCode: '400'
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''*'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: "#set ($root=$input.path('$')) \n{ \n  \"\
+                        errorMessage\": \"$root.errorMessage\",\n  \"errorType\":\
+                        \ \"$root.errorType\" \n}\n"
+                httpMethod: POST
+                type: aws
+        definitions:
+          CreateRecoveryStateChangeEvent:
+            type: object
+            properties:
+              name:
+                type: string
+                maxLength: 50
+            required:
+            - name
+          RecoveryStateChangeEvent:
+            allOf:
+            - type: object
+              properties:
+                wellNumber:
+                  type: string
+                currentState:
+                  type: string
+                effectiveDate:
+                  type: string
+                  format: date-time
+                stateChange:
+                  type: string
+                reason:
+                  type: string
+                  format: date-time
+                comment:
+                  type: string
+                  format: date-time
+                createdBy:
+                  type: string
+                createdAt:
+                  type: string
+                  format: date-time
+            - $ref: '#/definitions/CreateRecoveryStateChangeEvent'
+        x-amazon-apigateway-gateway-responses:
+          UNAUTHORIZED:
+            statusCode: 401
+            responseParameters:
+              gatewayresponse.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              gatewayresponse.header.Access-Control-Allow-Methods: '''*'''
+              gatewayresponse.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: "{\n  \"errorMessage\": $context.error.messageString\n\
+                }\n"
+          ACCESS_DENIED:
+            statusCode: 403
+            responseParameters:
+              gatewayresponse.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              gatewayresponse.header.Access-Control-Allow-Methods: '''*'''
+              gatewayresponse.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: "{\n  \"errorMessage\": $context.error.messageString\n\
+                }\n"
+          BAD_REQUEST_BODY:
+            statusCode: 400
+            responseParameters:
+              gatewayresponse.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              gatewayresponse.header.Access-Control-Allow-Methods: '''*'''
+              gatewayresponse.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: "{\n  \"errorMessage\": $context.error.messageString\n\
+                }\n"
+        securityDefinitions:
+          PermissionsAuth:
+            description: Authentication will be performed using the permissions authorizer
+            type: apiKey
+            name: Authorization
+            in: header
+  CreateRecoveryStateChangeEvent:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.createRecoveryStateChangeEvent
+      CodeUri: s3://igshared-resources/Lambda/dev/7d5fd0593b5c64b10aef9ef558d01d96
+      Policies:
+      - LambdaInvokePolicy:
+          FunctionName: Digital-PWRT-Api-CreateRecoveryStateChangeEventFunction
+      Environment:
+        Variables:
+          CognitoUserPool:
+            Ref: CognitoId
+          Bucket:
+            Ref: BucketName
+          Key: Staging/PWRT/RecoveryStateChangeEvents
+      Events:
+        UsersApi:
+          Type: Api
+          Properties:
+            Path: /recovery-state-change-event
+            Method: post
+            RestApiId:
+              Ref: PWRTApi
+        WarmingSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0/5 21-7 * * ? *)
+            Input: '{ "warmer":true,"concurrency":2 }'
+  PathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: pwrt
+      DomainName:
+        Fn::ImportValue:
+          Fn::Sub: ${SharedStack}-ApiDomainName
+      RestApiId:
+        Ref: PWRTApi
+  PWRTS3AccessPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: PWRTS3AccessPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+          Resource:
+          - Fn::Sub: arn:aws:s3:::${BucketName}
+          - Fn::Sub: arn:aws:s3:::${BucketName}/*
+      Roles:
+      - Ref: CreateRecoveryStateChangeEventRole

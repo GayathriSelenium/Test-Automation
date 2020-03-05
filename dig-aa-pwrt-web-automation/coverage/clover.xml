@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1571026119273" clover="3.2.0">
+  <project timestamp="1571026119273" name="All files">
+    <metrics statements="53" coveredstatements="45" conditionals="18" coveredconditionals="15" methods="10" coveredmethods="6" elements="81" coveredelements="66" complexity="0" loc="53" ncloc="53" packages="3" files="5" classes="5"/>
+    <package name="Assets">
+      <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="recoveryStateReasons.js" path="C:\Users\ryan.stephenson\Documents\dig-aa-pwrt-web\src\Assets\recoveryStateReasons.js">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+      </file>
+      <file name="recoveryStates.js" path="C:\Users\ryan.stephenson\Documents\dig-aa-pwrt-web\src\Assets\recoveryStates.js">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="Components.RecoveryForm">
+      <metrics statements="12" coveredstatements="12" conditionals="11" coveredconditionals="11" methods="3" coveredmethods="3"/>
+      <file name="validate.js" path="C:\Users\ryan.stephenson\Documents\dig-aa-pwrt-web\src\Components\RecoveryForm\validate.js">
+        <metrics statements="9" coveredstatements="9" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="5" type="stmt"/>
+        <line num="4" count="5" type="stmt"/>
+        <line num="6" count="5" type="stmt"/>
+        <line num="7" count="15" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="12" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="16" count="5" type="stmt"/>
+      </file>
+      <file name="validateUrlParams.js" path="C:\Users\ryan.stephenson\Documents\dig-aa-pwrt-web\src\Components\RecoveryForm\validateUrlParams.js">
+        <metrics statements="3" coveredstatements="3" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="5" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="9" count="4" type="stmt"/>
+      </file>
+    </package>
+    <package name="ducks">
+      <metrics statements="29" coveredstatements="21" conditionals="7" coveredconditionals="4" methods="7" coveredmethods="3"/>
+      <file name="recoveryForm.js" path="C:\Users\ryan.stephenson\Documents\dig-aa-pwrt-web\src\ducks\recoveryForm.js">
+        <metrics statements="29" coveredstatements="21" conditionals="7" coveredconditionals="4" methods="7" coveredmethods="3"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="30" count="3" type="cond" truecount="3" falsecount="3"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="64" count="1" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
